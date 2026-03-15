@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Game Benchmark Reports</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#09090b;color:#fafafa;padding:40px 24px;min-height:100vh}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#818cf8,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+p{color:#a1a1aa;margin-bottom:32px;font-size:0.9rem}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{padding:14px 18px;background:rgba(255,255,255,0.04);border:1px solid rgba(129,140,248,0.2);border-radius:12px;text-decoration:none;color:#fafafa;transition:background 0.15s}
+.item:hover{background:rgba(129,140,248,0.1)}
+.item-name{font-weight:600;margin-bottom:4px}
+.item-date{font-size:0.78rem;color:#a1a1aa}
+</style>
+</head>
+<body>
+<h1>🎮 Game Benchmark Reports</h1>
+<p>Auto-generated competitive intelligence reports.</p>
+<div class="list" id="list"><p style="color:#a1a1aa">Loading reports...</p></div>
+<script>
+// Auto-list all HTML files via GitHub API
+fetch('https://api.github.com/repos/YaldaLoveFilm/game-benchmark-reports/contents/')
+  .then(r=>r.json()).then(files=>{
+    const list=document.getElementById('list');
+    const reports=files.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html');
+    if(!reports.length){list.innerHTML='<p style="color:#a1a1aa">No reports yet.</p>';return;}
+    list.innerHTML=reports.reverse().map(f=>{
+      const name=f.name.replace(/_benchmark_.+\.html/,'').replace(/_/g,' ');
+      const date=f.name.match(/(\d{8}_\d{4})/)?.[1]?.replace(/(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/,'$1-$2-$3 $4:$5')??'';
+      return `<a class="item" href="${f.name}"><div class="item-name">${name}</div><div class="item-date">${date}</div></a>`;
+    }).join('');
+  }).catch(()=>{document.getElementById('list').innerHTML='<p style="color:#a1a1aa">Could not load report list.</p>';});
+</script>
+</body>
+</html>
